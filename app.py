@@ -10,7 +10,7 @@ st.markdown("""
     .block-container { padding: 0rem !important; }
     header, footer { visibility: hidden; }
     .dark-calendar {
-        filter: invert(0.9) hue-rotate(90deg) brightness(1.7) contrast(1.4);
+        filter: invert(0.9) hue-rotate(-290deg) brightness(1.7) contrast(1.4);
         background-color: #000000;
         display: block;
     }
@@ -45,9 +45,9 @@ def render_calendar():
     timestamp = int(time.time())
     refresh_url = f"{google_cal_url}&nocache={timestamp}"
     cal_html = f"""
-        <div style="background-color: #000000; width: 100%; height: 100vh; overflow: hidden;">
+        <div style="background-color: #000000; width: 108%; height: 100vh; overflow: hidden; margin-left: -95px;">
             <iframe src="{refresh_url}" class="dark-calendar" 
-            style="width: 100%; height: 110vh; border: none; margin-top: -50px;" 
+            style="width: 101%; height: 110vh; border: none; margin-top: -50px;" 
             frameborder="0" scrolling="no"></iframe>
         </div>
     """
