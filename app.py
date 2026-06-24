@@ -29,7 +29,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-col_flyers, col_calendar = st.columns([2, 1])
+col_flyers, col_calendar = st.columns([1, 1])
 
 flyer_placeholder = col_flyers.empty()
 cal_placeholder = col_calendar.empty()
