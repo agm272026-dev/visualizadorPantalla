@@ -45,7 +45,7 @@ def render_calendar():
     timestamp = int(time.time())
     refresh_url = f"{google_cal_url}&nocache={timestamp}"
     cal_html = f"""
-        <div style="background-color: #000000; width: 108%; height: 100vh; overflow: hidden; margin-left: -95px;">
+        <div style="background-color: #000000; width: 108%; height: 110vh; overflow: hidden; margin-left: -95px;">
             <iframe src="{refresh_url}" class="dark-calendar" 
             style="width: 101%; height: 100vh; border: none; margin-top: -50px;" 
             frameborder="0" scrolling="no"></iframe>
