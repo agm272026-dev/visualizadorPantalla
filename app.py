@@ -47,7 +47,7 @@ def render_calendar():
     cal_html = f"""
         <div style="background-color: #000000; width: 108%; height: 120vh; overflow: hidden; margin-left: -80px;">
             <iframe src="{refresh_url}" class="dark-calendar" 
-            style="width: 101%; height: 100vh; border: none; margin-top: -50px;" 
+            style="width: 101%; height: 105vh; border: none; margin-top: -50px;" 
             frameborder="0" scrolling="no"></iframe>
         </div>
     """
