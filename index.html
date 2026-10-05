@@ -86,25 +86,25 @@
     const imgElement = document.getElementById('flyer-img');
     const calFrame = document.getElementById('cal-frame');
 
-    // 1. Obtener lista de imágenes desde la API de GitHub
-    async function cargarListaFlyers() {
-      try {
-        const response = await fetch(apiUrl);
-        if (!response.ok) throw new Error("Error en la respuesta de GitHub");
-        
-        const data = await response.json();
-        
-        // Filtrar solo archivos con formato de imagen
-        const extensionesValidas = ['.png', '.jpg', '.jpeg', '.webp'];
-        listaFlyers = data
-          .filter(file => file.type === "file" && extensionesValidas.some(ext => file.name.toLowerCase().endsWith(ext)))
-          .map(file => file.download_url); // Usar la URL directa del archivo en GitHub
-        
-        console.log("Flyers detectados automáticamente:", listaFlyers);
-      } catch (error) {
-        console.error("No se pudo cargar la lista automática de flyers:", error);
-      }
-    }
+    // 1. Obtener lista de imágenes desde la API de GitHub usando rutas relativas
+async function cargarListaFlyers() {
+  try {
+    const response = await fetch(apiUrl);
+    if (!response.ok) throw new Error("Error en la respuesta de GitHub");
+    
+    const data = await response.json();
+    
+    // Filtrar solo archivos con formato de imagen
+    const extensionesValidas = ['.png', '.jpg', '.jpeg', '.webp'];
+    listaFlyers = data
+      .filter(file => file.type === "file" && extensionesValidas.some(ext => file.name.toLowerCase().endsWith(ext)))
+      .map(file => `flyers/${file.name}`); // Usa la ruta relativa directa alojada en GitHub Pages
+    
+    console.log("Flyers detectados automáticamente:", listaFlyers);
+  } catch (error) {
+    console.error("No se pudo cargar la lista automática de flyers:", error);
+  }
+}
 
     // 2. Rotar la imagen actual
     function actualizarFlyer() {
