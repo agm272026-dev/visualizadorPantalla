@@ -57,7 +57,7 @@
   <div class="container">
     <!-- Columna Izquierda: Flyers -->
     <div class="col-flyers">
-      <img id="flyer-img" src="" alt="Cargando flyer..." />
+      <img id="flyer-img" src="" alt="Cargando flyers..." />
     </div>
 
     <!-- Columna Derecha: Google Calendar -->
@@ -67,23 +67,46 @@
   </div>
 
   <script>
-    // --- CONFIGURACIÓN DE FLYERS ---
-    // Agrega aquí los nombres de las imágenes guardadas en la carpeta /flyers/
-    const listaFlyers = [
-      "flyers/flyer1.jpg",
-      "flyers/flyer2.jpg",
-      "flyers/flyer3.png"
-    ];
+    // -------------------------------------------------------------
+    // CONFIGURA AQUÍ TU USUARIO Y NOMBRE REPOSITORIO DE GITHUB
+    // -------------------------------------------------------------
+    const USUARIO_GITHUB = "agm272026-dev";
+    const REPO_GITHUB = "Almi.2025";
+    // -------------------------------------------------------------
 
+    const apiUrl = `https://api.github.com/repos/${USUARIO_GITHUB}/${REPO_GITHUB}/contents/flyers`;
     const baseUrlCal = "https://calendar.google.com/calendar/embed?src=subsecretariadedeportescdia%40gmail.com&ctz=America%2FArgentina%2FCordoba&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=0&showCalendars=0&showTz=0";
 
+    let listaFlyers = [];
     let flyerIndex = 0;
     let ciclo = 0;
-    const CICLOS_CALENDARIO = 6; // Refrescar calendario cada 6 ciclos (60 seg)
+    const CICLOS_CALENDARIO = 6; // Refrescar calendario cada 60 seg (6 ciclos de 10s)
+    const CICLOS_RECONSULTAR_REPO = 36; // Reconsultar carpeta de imágenes en GitHub cada 6 min (36 ciclos de 10s)
 
     const imgElement = document.getElementById('flyer-img');
     const calFrame = document.getElementById('cal-frame');
 
+    // 1. Obtener lista de imágenes desde la API de GitHub
+    async function cargarListaFlyers() {
+      try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error("Error en la respuesta de GitHub");
+        
+        const data = await response.json();
+        
+        // Filtrar solo archivos con formato de imagen
+        const extensionesValidas = ['.png', '.jpg', '.jpeg', '.webp'];
+        listaFlyers = data
+          .filter(file => file.type === "file" && extensionesValidas.some(ext => file.name.toLowerCase().endsWith(ext)))
+          .map(file => file.download_url); // Usar la URL directa del archivo en GitHub
+        
+        console.log("Flyers detectados automáticamente:", listaFlyers);
+      } catch (error) {
+        console.error("No se pudo cargar la lista automática de flyers:", error);
+      }
+    }
+
+    // 2. Rotar la imagen actual
     function actualizarFlyer() {
       if (listaFlyers.length > 0) {
         if (flyerIndex >= listaFlyers.length) {
@@ -94,21 +117,31 @@
       }
     }
 
+    // 3. Refrescar Iframe del Calendario
     function actualizarCalendario() {
       const timestamp = new Date().getTime();
       calFrame.src = baseUrlCal + "&nocache=" + timestamp;
     }
 
-    // Bucle principal cada 10 segundos
-    function mainLoop() {
+    // Bucle principal (se ejecuta cada 10 segundos)
+    async function mainLoop() {
+      // Reconsultar lista de archivos en GitHub periódicamente
+      if (ciclo % CICLOS_RECONSULTAR_REPO === 0) {
+        await cargarListaFlyers();
+      }
+
+      // Actualizar calendario cuando corresponda
       if (ciclo % CICLOS_CALENDARIO === 0) {
         actualizarCalendario();
       }
+
+      // Cambiar flyer siempre
       actualizarFlyer();
+
       ciclo++;
     }
 
-    // Ejecutar inmediatamente al cargar y luego cada 10 segundos
+    // Iniciar
     mainLoop();
     setInterval(mainLoop, 10000);
   </script>
